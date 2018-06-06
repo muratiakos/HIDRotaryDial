@@ -39,11 +39,7 @@ boolean buttonPressed()
 
 void sendContactInfo()
 {
-  Keyboard.print("Cooper Maa");
-  Keyboard.sendKeyStroke(KEY_ENTER);
-  Keyboard.print("Email: coopermaa77@gmail.com");
-  Keyboard.sendKeyStroke(KEY_ENTER);
-  Keyboard.print("Website: http://coopermaa2nd.blogspot.com/");
+  Keyboard.print("Akos");
   Keyboard.sendKeyStroke(KEY_ENTER);
 }
 

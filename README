@@ -7,6 +7,9 @@ Based on
 Using firmware and sources from:
  - https://github.com/coopermaa/USBKeyboard 
 
+## Setup dfu-programmer
+sudo port install dfu-programmer
+
 
 ## Flash firmware
 ```bash
