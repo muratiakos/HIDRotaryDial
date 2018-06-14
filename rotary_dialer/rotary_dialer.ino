@@ -12,9 +12,9 @@ byte counter;
 
 void setup() {
   pinMode(ledPin, OUTPUT);
-  pinMode(debugPin, INPUT);
-  pinMode(dialerPin, INPUT);
-  pinMode(counterPin, INPUT);
+  pinMode(debugPin, INPUT_PULLUP);
+  pinMode(dialerPin, INPUT_PULLUP);
+  pinMode(counterPin, INPUT_PULLUP);
 
   Keyboard.init();
   counter = 0;
@@ -22,14 +22,15 @@ void setup() {
 
 void loop() {
   delay(10);
+  counter++;
 
   // Read controls
-  int isDebug = digitalRead(debugPin);
-  int isDialing = digitalRead(dialerPin);
+  int isDebug = 1 - digitalRead(debugPin);
+  int isDialing = 1 - digitalRead(dialerPin);
   int isCounting = digitalRead(counterPin);
   
-  if (1 || isDebug) {
-    counter++;
+  if (isDebug && isDialing) {
+    
     Serial.print(counter);
     Serial.print("\t");
     Serial.print(isDebug);
