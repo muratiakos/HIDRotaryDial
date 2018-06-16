@@ -11,7 +11,6 @@ const int ledPin =  13;
 
 byte window = 0;
 byte counter = 0;
-byte last_counter = 0;
 byte last_counter_bit = 0;
 byte last_dialer_bit = 0;
 
@@ -48,15 +47,18 @@ void loop() {
   int isCounting = digitalRead(counterPin);
 
   // Count the dials for the edges
-  if (!isDialing) { // Reset counter
+  if (!isDialing && last_dialer_bit) {
+    sendNumber(counter);
+  }
+  // Reset counter
+  else if (!isDialing) {
     counter = 0;
   }
   else if (isDialing && isCounting && (1-last_counter_bit)) {
     counter++;
-    last_counter = counter;
   } 
   
-  //Get debug info
+  // Get debug info
   if (isDebug) {
     // Only show 
     if (isDialing) {
@@ -73,15 +75,11 @@ void loop() {
       Serial.print(last_counter_bit);
       Serial.print("\t");
       Serial.print(counter);
-      Serial.print(" ");
-      Serial.print(last_counter);
       Serial.print("\n");
     }
   }
 
-  if (!isDialing && last_dialer_bit) {
-    sendNumber(last_counter);
-  }
+  
   //uint8_t ledStatus;
   //ledStatus = Keyboard.readLedStatus();
 
