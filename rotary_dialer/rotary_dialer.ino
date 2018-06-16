@@ -9,23 +9,38 @@ const int counterPin =  4; // ROTARY - BROWN
 
 const int ledPin =  13;
 
-byte window;
+byte window = 0;
 byte counter = 0;
+byte last_counter = 0;
 byte last_counter_bit = 0;
+byte last_dialer_bit = 0;
 
 void setup() {
+  window = 0;
+  counter = 0;
+  last_counter_bit = 0;
+  last_dialer_bit = 0;
+  
   pinMode(ledPin, OUTPUT);
   pinMode(debugPin, INPUT_PULLUP);
   pinMode(dialerPin, INPUT_PULLUP);
   pinMode(counterPin, INPUT_PULLUP);
 
   Keyboard.init();
-  window = 0;
+}
+
+void sendNumber(byte number) {
+  Serial.print("Sending: ");
+  if (number > 0) {
+    Serial.print(number%10);
+  } else {
+    Serial.print("Nothing");
+  }
+  Serial.print("\n");
 }
 
 void loop() {
   delay(10);
-  window++;
 
   // Read controls
   int isDebug = 1 - digitalRead(debugPin);
@@ -38,6 +53,7 @@ void loop() {
   }
   else if (isDialing && isCounting && (1-last_counter_bit)) {
     counter++;
+    last_counter = counter;
   } 
   
   //Get debug info
@@ -49,16 +65,23 @@ void loop() {
       Serial.print(isDebug);
       Serial.print("\t");
       Serial.print(isDialing);
+      Serial.print(" ");
+      Serial.print(last_dialer_bit);
       Serial.print("\t");
       Serial.print(isCounting);
-      Serial.print("\t");
+      Serial.print(" ");
       Serial.print(last_counter_bit);
       Serial.print("\t");
       Serial.print(counter);
+      Serial.print(" ");
+      Serial.print(last_counter);
       Serial.print("\n");
     }
   }
-  
+
+  if (!isDialing && last_dialer_bit) {
+    sendNumber(last_counter);
+  }
   //uint8_t ledStatus;
   //ledStatus = Keyboard.readLedStatus();
 
@@ -73,5 +96,7 @@ void loop() {
   //Keyboard.sendKeyStroke(KEY_ENTER);     // Send keystroke
 
   // Capture the last state
+  window++;
+  last_dialer_bit = isDialing;
   last_counter_bit = isCounting;
 }
