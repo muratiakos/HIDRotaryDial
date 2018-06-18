@@ -19,3 +19,6 @@ sudo ./program_keyboard.sh
 # Enable USB keyboard mode
 sudo ./enable_keyboard.sh
 ```
+
+## Android dialer
+Under the `app` folder.
