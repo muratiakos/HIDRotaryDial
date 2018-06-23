@@ -49,7 +49,7 @@ public class DialerActivity extends AppCompatActivity {
             case KeyEvent.KEYCODE_CLEAR:
                 dialNumber = "";
                 break;
-
+            //case KeyEvent.
             case KeyEvent.KEYCODE_ENTER:
                 dialNumber();
             default:
