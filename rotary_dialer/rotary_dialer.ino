@@ -6,6 +6,7 @@
 const int debugPin =  2; //For serial debugging mode
 const int dialerPin =  3; // ROTARY - GREEN
 const int counterPin =  4; // ROTARY - BROWN
+const int handlePin =  5; // HANDLE - YELLOW
 
 const int ledPin =  13;
 
@@ -13,18 +14,21 @@ byte window = 0;
 byte counter = 0;
 byte last_counter_bit = 0;
 byte last_dialer_bit = 0;
+byte last_handle_bit = 0;
 
 void setup() {
   window = 0;
   counter = 0;
   last_counter_bit = 0;
   last_dialer_bit = 0;
+  last_handle_bit = 0;
   
   pinMode(ledPin, OUTPUT);
   pinMode(debugPin, INPUT_PULLUP);
   pinMode(dialerPin, INPUT_PULLUP);
   pinMode(counterPin, INPUT_PULLUP);
-
+  pinMode(handlePin, INPUT_PULLUP);
+  
   Keyboard.init();
 }
 
@@ -38,6 +42,14 @@ void sendNumber(byte number) {
   Serial.print("\n");
 }
 
+void sendHandleOff() {
+  Serial.print("Handle: lifted\n");
+}
+
+void sendHandleOn() {
+  Serial.print("Handle: put back\n");
+}
+
 void loop() {
   delay(10);
 
@@ -45,9 +57,18 @@ void loop() {
   int isDebug = 1 - digitalRead(debugPin);
   int isDialing = 1 - digitalRead(dialerPin);
   int isCounting = digitalRead(counterPin);
+  int isHandleOff = digitalRead(handlePin);
 
-  // Count the dials for the edges
-  if (!isDialing && last_dialer_bit) {
+  if (isHandleOff && last_handle_bit == 0) {
+    // Handle reset
+    sendHandleOff();
+  }
+  else if (!isHandleOff && last_handle_bit) {
+    // Handle reset
+    sendHandleOn();
+  }
+  else if (!isDialing && last_dialer_bit) {
+    // Count the dials for the edges
     sendNumber(counter);
   }
   // Reset counter
@@ -75,6 +96,8 @@ void loop() {
       Serial.print(last_counter_bit);
       Serial.print("\t");
       Serial.print(counter);
+      Serial.print("\t");
+      Serial.print(isHandleOff);
       Serial.print("\n");
     }
   }
@@ -95,6 +118,7 @@ void loop() {
 
   // Capture the last state
   window++;
+  last_handle_bit = isHandleOff;
   last_dialer_bit = isDialing;
   last_counter_bit = isCounting;
 }
