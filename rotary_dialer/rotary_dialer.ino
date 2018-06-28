@@ -34,14 +34,17 @@ void setup() {
 }
 
 void log(char* text) {
-  if (isDebug) {
-    Serial.print(text);
-  }
+  if (isDebug) Serial.print(text);
 }
+
+void log(int num) {
+  if (isDebug) Serial.print(num);
+}
+
 void sendNumber(byte number) {
   log("Sending: ");
   if (number > 0) {
-    Serial.print(number%10);
+    log(number%10);
   } else {
     log("Nothing");
   }
@@ -83,29 +86,26 @@ void loop() {
   }
   else if (isDialing && isCounting && (1-last_counter_bit)) {
     counter++;
-  } 
+  }
   
-  // Get debug info
-  if (isDebug) {
-    // Only show 
-    if (isDialing) {
-      Serial.print(window);
-      Serial.print("\t");
-      Serial.print(isDebug);
-      Serial.print("\t");
-      Serial.print(isDialing);
-      Serial.print(" ");
-      Serial.print(last_dialer_bit);
-      Serial.print("\t");
-      Serial.print(isCounting);
-      Serial.print(" ");
-      Serial.print(last_counter_bit);
-      Serial.print("\t");
-      Serial.print(counter);
-      Serial.print("\t");
-      Serial.print(isHandleOff);
-      Serial.print("\n");
-    }
+  // Only show 
+  if (isDialing) {
+    log(window);
+    log("\t");
+    log(isDebug);
+    log("\t");
+    log(isDialing);
+    log(" ");
+    log(last_dialer_bit);
+    log("\t");
+    log(isCounting);
+    log(" ");
+    log(last_counter_bit);
+    log("\t");
+    log(counter);
+    log("\t");
+    log(isHandleOff);
+    log("\n");
   }
 
   
@@ -115,8 +115,7 @@ void loop() {
   //   digitalWrite(ledPin, HIGH);      
   // } else {
   //   digitalWrite(ledPin, LOW);
-  // } 
-
+  // }
   
   //Keyboard.print("Akos");
   //Keyboard.sendKeyStroke(KEY_ENTER);     // Send keystroke
