@@ -10,6 +10,7 @@ const int handlePin =  5; // HANDLE - YELLOW
 
 const int ledPin =  13;
 
+byte isDebug = 0;
 byte window = 0;
 byte counter = 0;
 byte last_counter_bit = 0;
@@ -32,32 +33,37 @@ void setup() {
   Keyboard.init();
 }
 
+void log(char* text) {
+  if (isDebug) {
+    Serial.print(text);
+  }
+}
 void sendNumber(byte number) {
-  Serial.print("Sending: ");
+  log("Sending: ");
   if (number > 0) {
     Serial.print(number%10);
   } else {
-    Serial.print("Nothing");
+    log("Nothing");
   }
-  Serial.print("\n");
+  log("\n");
 }
 
 void sendHandleOff() {
-  Serial.print("Handle: lifted\n");
+  log("Handle: lifted\n");
 }
 
 void sendHandleOn() {
-  Serial.print("Handle: put back\n");
+  log("Handle: put back\n");
 }
 
 void loop() {
   delay(10);
 
   // Read controls
-  int isDebug = 1 - digitalRead(debugPin);
-  int isDialing = 1 - digitalRead(dialerPin);
-  int isCounting = digitalRead(counterPin);
-  int isHandleOff = digitalRead(handlePin);
+  isDebug = 1 - digitalRead(debugPin);
+  byte isDialing = 1 - digitalRead(dialerPin);
+  byte isCounting = digitalRead(counterPin);
+  byte isHandleOff = digitalRead(handlePin);
 
   if (isHandleOff && last_handle_bit == 0) {
     // Handle reset
@@ -105,7 +111,6 @@ void loop() {
   
   //uint8_t ledStatus;
   //ledStatus = Keyboard.readLedStatus();
-
   // if (ledStatus & LED_CAPSLOCK) {
   //   digitalWrite(ledPin, HIGH);      
   // } else {
