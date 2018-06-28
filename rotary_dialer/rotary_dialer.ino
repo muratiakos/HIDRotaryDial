@@ -18,12 +18,6 @@ byte last_dialer_bit = 0;
 byte last_handle_bit = 0;
 
 void setup() {
-  window = 0;
-  counter = 0;
-  last_counter_bit = 0;
-  last_dialer_bit = 0;
-  last_handle_bit = 0;
-  
   pinMode(ledPin, OUTPUT);
   pinMode(debugPin, INPUT_PULLUP);
   pinMode(dialerPin, INPUT_PULLUP);
@@ -41,10 +35,18 @@ void log(int num) {
   if (isDebug) Serial.print(num);
 }
 
-void sendNumber(byte number) {
+void sendNumber(byte tick) {
   log("Sending: ");
-  if (number > 0) {
-    log(number%10);
+  if (tick > 0) {
+    byte number = tick%10;
+    log(number);
+
+    log(" = Keystroke Code: ");
+    byte keystroke = KEY_0;
+    if (number > 0) keystroke = KEY_Z + number;
+    log(keystroke);
+    
+    if (!isDebug) Keyboard.sendKeyStroke(keystroke);
   } else {
     log("Nothing");
   }
@@ -53,10 +55,12 @@ void sendNumber(byte number) {
 
 void sendHandleOff() {
   log("Handle: lifted\n");
+  if (!isDebug) Keyboard.sendKeyStroke(KEY_ENTER);
 }
 
 void sendHandleOn() {
   log("Handle: put back\n");
+  if (!isDebug) Keyboard.sendKeyStroke(KEY_ESCAPE);
 }
 
 void loop() {
@@ -107,7 +111,6 @@ void loop() {
     log(isHandleOff);
     log("\n");
   }
-
   
   //uint8_t ledStatus;
   //ledStatus = Keyboard.readLedStatus();
@@ -116,9 +119,6 @@ void loop() {
   // } else {
   //   digitalWrite(ledPin, LOW);
   // }
-  
-  //Keyboard.print("Akos");
-  //Keyboard.sendKeyStroke(KEY_ENTER);     // Send keystroke
 
   // Capture the last state
   window++;
