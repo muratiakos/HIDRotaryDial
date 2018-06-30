@@ -27,8 +27,15 @@ public class DialerActivity extends AppCompatActivity {
     }
 
     @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        Log.i(LOG_TAG,"Key pressed: " + String.valueOf(keyCode));
+        return super.onKeyDown(keyCode, event);
+    }
+
+    @Override
     public boolean onKeyUp(int keyCode, KeyEvent event) {
         switch(keyCode) {
+            // Register Numbers
             case KeyEvent.KEYCODE_0:
             case KeyEvent.KEYCODE_1:
             case KeyEvent.KEYCODE_2:
@@ -41,14 +48,19 @@ public class DialerActivity extends AppCompatActivity {
             case KeyEvent.KEYCODE_9:
                 dialNumber += String.valueOf(keyCode-7);
                 break;
+
+            // Remove Numbers
             case KeyEvent.KEYCODE_DEL:
                 if (dialNumber.length() >= 1) {
                     dialNumber = TextUtils.substring(dialNumber, 0, dialNumber.length() - 1);
                 }
                 break;
-
-            case KeyEvent.KEYCODE_ENTER:
+                
+            // Dial with SPACE
+            case KeyEvent.KEYCODE_SPACE:
                 dialNumber();
+            // Clear with ENTER, ESC or END
+            case KeyEvent.KEYCODE_ENTER:
             case KeyEvent.KEYCODE_MOVE_END:
             case KeyEvent.KEYCODE_ESCAPE:
             case KeyEvent.KEYCODE_CLEAR:
