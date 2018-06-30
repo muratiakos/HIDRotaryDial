@@ -8,6 +8,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class DialerActivity extends AppCompatActivity {
     private static String LOG_TAG = "DIALER";
@@ -45,13 +46,14 @@ public class DialerActivity extends AppCompatActivity {
                     dialNumber = TextUtils.substring(dialNumber, 0, dialNumber.length() - 1);
                 }
                 break;
+
+            case KeyEvent.KEYCODE_ENTER:
+                dialNumber();
+            case KeyEvent.KEYCODE_MOVE_END:
             case KeyEvent.KEYCODE_ESCAPE:
             case KeyEvent.KEYCODE_CLEAR:
                 dialNumber = "";
                 break;
-            //case KeyEvent.
-            case KeyEvent.KEYCODE_ENTER:
-                dialNumber();
             default:
                 //NOOP
         }
@@ -61,14 +63,26 @@ public class DialerActivity extends AppCompatActivity {
     }
 
     private void dialNumber() {
+        String message = "";
+        if (dialNumber.length() < 3) {
+            message = "Number is too short to dial";
+            return;
+        }
+
         try {
+            message = "Dialing " + dialNumber;
             startActivity(new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + dialNumber)));
         }
         catch (SecurityException ex) {
             Log.e(LOG_TAG, ex.getMessage());
+            message = ex.getMessage();
         }
         catch (Exception ex) {
             Log.e(LOG_TAG, ex.getMessage());
+            message = ex.getMessage();
         }
+
+        if (message != "")
+            Toast.makeText(this, message, Toast.LENGTH_LONG);
     }
 }
