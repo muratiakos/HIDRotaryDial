@@ -55,12 +55,12 @@ void sendNumber(byte tick) {
 
 void sendHandleOff() {
   log("Handle: lifted\n");
-  if (!isDebug) Keyboard.sendKeyStroke(KEY_ENTER);
+  if (!isDebug) Keyboard.sendKeyStroke(KEY_SPACE);
 }
 
 void sendHandleOn() {
   log("Handle: put back\n");
-  if (!isDebug) Keyboard.sendKeyStroke(KEY_ESCAPE);
+  if (!isDebug) Keyboard.sendKeyStroke(KEY_ENTER);
 }
 
 void loop() {

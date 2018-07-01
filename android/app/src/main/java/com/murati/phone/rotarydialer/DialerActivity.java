@@ -27,12 +27,6 @@ public class DialerActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        Log.i(LOG_TAG,"Key pressed: " + String.valueOf(keyCode));
-        return super.onKeyDown(keyCode, event);
-    }
-
-    @Override
     public boolean onKeyUp(int keyCode, KeyEvent event) {
         switch(keyCode) {
             // Register Numbers
@@ -51,19 +45,22 @@ public class DialerActivity extends AppCompatActivity {
 
             // Remove Numbers
             case KeyEvent.KEYCODE_DEL:
+                sendMessage("DEL");
                 if (dialNumber.length() >= 1) {
                     dialNumber = TextUtils.substring(dialNumber, 0, dialNumber.length() - 1);
                 }
                 break;
-                
+
             // Dial with SPACE
             case KeyEvent.KEYCODE_SPACE:
+                sendMessage("SPACE");
                 dialNumber();
             // Clear with ENTER, ESC or END
             case KeyEvent.KEYCODE_ENTER:
             case KeyEvent.KEYCODE_MOVE_END:
             case KeyEvent.KEYCODE_ESCAPE:
             case KeyEvent.KEYCODE_CLEAR:
+                sendMessage("ENTER");
                 dialNumber = "";
                 break;
             default:
@@ -75,26 +72,22 @@ public class DialerActivity extends AppCompatActivity {
     }
 
     private void dialNumber() {
-        String message = "";
         if (dialNumber.length() < 3) {
-            message = "Number is too short to dial";
-            return;
+            sendMessage("Number is too short to dial");
+        } else {
+            try {
+                sendMessage("Dialing " + dialNumber);
+                startActivity(new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + dialNumber)));
+            } catch (SecurityException ex) {
+                sendMessage(ex.getMessage());
+            } catch (Exception ex) {
+                sendMessage(ex.getMessage());
+            }
         }
-
-        try {
-            message = "Dialing " + dialNumber;
-            startActivity(new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + dialNumber)));
-        }
-        catch (SecurityException ex) {
-            Log.e(LOG_TAG, ex.getMessage());
-            message = ex.getMessage();
-        }
-        catch (Exception ex) {
-            Log.e(LOG_TAG, ex.getMessage());
-            message = ex.getMessage();
-        }
-
-        if (message != "")
-            Toast.makeText(this, message, Toast.LENGTH_LONG);
     }
+
+    private void sendMessage(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+    }
+
 }
